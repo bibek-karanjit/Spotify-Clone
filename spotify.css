@@ -29,6 +29,7 @@ body {
   gap: 10px;
   padding: 14px 0px 10px 23px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .heading {
@@ -40,13 +41,16 @@ body {
 
 .heading h2 {
   font-weight: bold;
+  cursor: pointer;
 }
+
 .heading img {
   width: 20px;
 }
 
 .logo {
   padding: 4px 0px 0px 10px;
+  cursor: pointer;
 }
 
 .library {
@@ -89,6 +93,10 @@ body {
 
 .header > * {
   padding: 8px;
+}
+
+.header .nav svg{
+  cursor: pointer;
 }
 
 .cardContainer {
