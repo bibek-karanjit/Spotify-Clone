@@ -1,4 +1,5 @@
 let currentSong = new Audio();
+let songss;
 
 // function to convert the time in 00:00 format
 function formatTime(seconds) {
@@ -6,12 +7,11 @@ function formatTime(seconds) {
   const remainingSeconds = Math.floor(seconds % 60);
 
   // Pad with zeros if needed
-  const formattedMinutes = String(minutes).padStart(2, '0');
-  const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+  const formattedMinutes = String(minutes).padStart(2, "0");
+  const formattedSeconds = String(remainingSeconds).padStart(2, "0");
 
   return `${formattedMinutes}:${formattedSeconds}`;
 }
-
 
 async function getSongs() {
   const url = "http://127.0.0.1:5500/songs/";
@@ -31,38 +31,33 @@ async function getSongs() {
 
   // Log the song names and URLs
   songLinks.forEach((link) => {
-    // const songName = link.textContent.trim();
     const songTitle = link.title.trim();
     songTitles.push(songTitle);
 
     const songUrl = link.href;
     songs.push(songUrl);
-    // console.log(`Song: ${songName}, URL: ${songUrl}`);
   });
   return { songs, songTitles };
 }
 
 // plays music
-const playMusic = (track, pause=false) => {
-  // let audio = new Audio("/songs/" + track);
+const playMusic = (track, pause = false) => {
   currentSong.src = "/songs/" + track;
-  if(!pause){
+  if (!pause) {
     currentSong.play();
     play.src = "pause.svg";
   }
   document.querySelector(".songInfo").innerHTML = track;
-  document.querySelector(".songTime").innerHTML =  "00:00 / 00:00"; 
+  document.querySelector(".songTime").innerHTML = "00:00 / 00:00";
 };
 
 async function main() {
   // get the list of songs
-  let songss = await getSongs();
-  // let songTitles = await getSongs();
-  
-  playMusic(songss.songTitles[0], true);
+  songss = await getSongs();
 
-  let songURLs = songss.songs;
-  console.log(songURLs);
+  // Play a random song at the very beginning
+  const randomIndex = Math.floor(Math.random() * songss.songTitles.length);
+  playMusic(songss.songTitles[randomIndex], true);
 
   let songUL = document
     .querySelector(".songList")
@@ -107,29 +102,58 @@ async function main() {
 }
 
 // Update the time
-currentSong.addEventListener("timeupdate", () =>{
-  document.querySelector(".songTime").innerHTML = `${formatTime(currentSong.currentTime)} / ${formatTime(currentSong.duration)}`;
-  document.querySelector(".circle").style.left = `${(currentSong.currentTime / currentSong.duration) * 100}%`;
-})
+currentSong.addEventListener("timeupdate", () => {
+  document.querySelector(".songTime").innerHTML = `${formatTime(
+    currentSong.currentTime
+  )} / ${formatTime(currentSong.duration)}`;
+  document.querySelector(".circle").style.left = `${
+    (currentSong.currentTime / currentSong.duration) * 100
+  }%`;
+});
 
 // Add an event listner to seekbar
 document.querySelector(".seekbar").addEventListener("click", (e) => {
   const seekTime = (e.offsetX / e.target.clientWidth) * currentSong.duration;
   currentSong.currentTime = seekTime;
-  document.querySelector(".circle").style.left = `${(currentSong.currentTime / currentSong.duration) * 100}%`;
-})
+  document.querySelector(".circle").style.left = `${
+    (currentSong.currentTime / currentSong.duration) * 100
+  }%`;
+});
 
 // Add an event listener to the hamburger
 document.querySelector(".hamburger").addEventListener("click", () => {
   document.querySelector(".left").style.left = "0";
-})
+});
 
 // Add an event listener to the close button
 document.querySelector(".close").addEventListener("click", () => {
   document.querySelector(".left").style.left = "-140%";
-})
+});
 
-// Add an event listener to previous and next buttons
+// Add an event listener to previous
+previous.addEventListener("click", () => {
+  const findingIndex = decodeURIComponent(
+    currentSong.src.split("/").splice(-1)[0]
+  );
+  let index = songss.songTitles.indexOf(findingIndex);
+  if (index > 0) {
+    playMusic(songss.songTitles[index - 1]);
+  } else {
+    playMusic(songss.songTitles[songss.songTitles.length - 1]);
+  }
+});
 
+// Add an event listener to next
+next.addEventListener("click", () => {
+  const findingIndex = decodeURIComponent(
+    currentSong.src.split("/").splice(-1)[0]
+  );
+  let index = songss.songTitles.indexOf(findingIndex);
+  if (index >= 0 && index < songss.songTitles.length - 1) {
+    playMusic(songss.songTitles[index + 1]);
+  } else {
+    playMusic(songss.songTitles[0]);
+  }
+});
 
 main();
