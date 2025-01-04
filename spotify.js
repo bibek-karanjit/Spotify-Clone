@@ -153,7 +153,7 @@ next.addEventListener("click", () => {
     playMusic(songss.songTitles[index + 1]);
   } else {
     playMusic(songss.songTitles[0]);
-  }
+  } 
 });
 
 main();

@@ -128,11 +128,11 @@ body {
 }
 
 .spotifyPlaylists .card {
+  position: relative;
   width: 190px;
   padding: 10px;
   border-radius: 7px;
   background-color: #262626;
-  position: relative;
 }
 
 .spotifyPlaylists .card > * {
@@ -155,8 +155,8 @@ body {
 }
 
 .play {
-  width: 50px;
   position: absolute;
+  width: 50px;
   top: 147px;
   right: 12px;
   opacity: 0;
@@ -246,10 +246,37 @@ body {
   overflow: hidden;
 }
 
-.songTime {
+.songTime{
+  min-width: fit-content;
+}
+
+.volumeandTime {
   min-width: 38%;
+  max-width: 38%;   
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.volume{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.volume img {
+  height: 20px;
+}
+
+.range input{
+  display: flex;
+  align-items: center;
+  height: 4px;
+  cursor: pointer;
 }
 
 .songButtons > :hover {
@@ -328,6 +355,11 @@ body {
   cursor: pointer;
 }
 
+.close {
+  display: none;
+}
+
+/* MEDIA QUERIES */
 @media (max-width: 1450px) {
   .songList ul li {
     font-size: 12px;
@@ -340,11 +372,16 @@ body {
   .left {
     z-index: 1;
   }
+
 }
 
 @media (max-width: 1250px) {
   .songList ul li {
     font-size: 10px;
+  }
+
+  .close{
+    display: block;
   }
 
   .left {
@@ -388,13 +425,23 @@ body {
 
 /* for the playbar texts */
 @media (max-width: 888px) {
-  .songInfo,
-  .songTime {
-    display: none;
+
+  .playBar {
+    height: 120px;
+    padding: 5px 0;
   }
 
   .songDetails {
-    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .volumeandTime {
+    max-width: fit-content;
+  }
+
+  .songInfo {
+    max-width: 90%;
   }
 }
 
