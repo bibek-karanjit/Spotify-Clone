@@ -17,7 +17,7 @@ function formatTime(seconds) {
 async function getSongs(folder) {
   currFolder = `songs/${folder}`;
 
-  const url = `http://127.0.0.1:5500/${currFolder}`;
+  const url = `/${currFolder}`;
   const response = await fetch(url);
   const html = await response.text();
 
@@ -33,7 +33,7 @@ async function getSongs(folder) {
 
   // Log the song names and URLs
   songLinks.forEach((link) => {
-    const songTitle = link.title.trim();
+    const songTitle = link.textContent.trim();
     songTitles.push(songTitle);
 
     const songUrl = link.href;
@@ -55,7 +55,8 @@ const playMusic = (track, pause = false) => {
 };
 
 async function displayAlbums() {
-  const url = `http://127.0.0.1:5500/songs`;
+  const url = `/songs`;
+
   const response = await fetch(url);
   const html = await response.text();
 
@@ -70,9 +71,11 @@ async function displayAlbums() {
     const e = array[index];
 
     if (e.href.includes("/songs/")) {
-      let folder = e.href.split("/").slice(-1)[0];
+      // let folder = e.href.split("/").slice(-1)[0];
+      let folder = e.href.split("/").filter(Boolean).pop();
+
       // Get the meta-data of the folder
-      const url = `http://127.0.0.1:5500/songs/${folder}/info.json`;
+      const url = `/songs/${folder}/info.json`;
       const response = await fetch(url);
       const responses = await response.json();
 
@@ -190,18 +193,16 @@ currentSong.addEventListener("timeupdate", () => {
   document.querySelector(".songTime").innerHTML = `${formatTime(
     currentSong.currentTime
   )} / ${formatTime(currentSong.duration)}`;
-  document.querySelector(".circle").style.left = `${
-    (currentSong.currentTime / currentSong.duration) * 100
-  }%`;
+  document.querySelector(".circle").style.left = `${(currentSong.currentTime / currentSong.duration) * 100
+    }%`;
 });
 
 // Add an event listner to seekbar
 document.querySelector(".seekbar").addEventListener("click", (e) => {
   const seekTime = (e.offsetX / e.target.clientWidth) * currentSong.duration;
   currentSong.currentTime = seekTime;
-  document.querySelector(".circle").style.left = `${
-    (currentSong.currentTime / currentSong.duration) * 100
-  }%`;
+  document.querySelector(".circle").style.left = `${(currentSong.currentTime / currentSong.duration) * 100
+    }%`;
 });
 
 // Add an event listener to the hamburger
